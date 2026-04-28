@@ -2,8 +2,102 @@
 <html>
 <head>
   <title>Bubble Game</title>
+  <style>
+    body {
+      margin: 0;
+      overflow: hidden;
+      font-family: Arial;
+      background: #f0f0f0;
+    }
+
+    canvas {
+      display: block;
+      background-image: linear-gradient(#ddd 1px, transparent 1px),
+                        linear-gradient(90deg, #ddd 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+
+    #menu {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: white;
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      box-shadow: 0 0 10px rgba(0,0,0,0.2);
+    }
+
+    input, button {
+      padding: 10px;
+      margin: 5px;
+    }
+  </style>
 </head>
 <body>
-  <h1>Game kamu berhasil!</h1>
+
+<div id="menu">
+  <h2>Bubble Game</h2>
+  <input id="name" placeholder="Nickname"><br>
+  <button onclick="startGame()">Play</button>
+</div>
+
+<canvas id="game"></canvas>
+
+<script>
+const canvas = document.getElementById("game");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let player = {
+  x: canvas.width / 2,
+  y: canvas.height / 2,
+  size: 20,
+  name: ""
+};
+
+let mouse = { x: player.x, y: player.y };
+let playing = false;
+
+document.addEventListener("mousemove", (e) => {
+  mouse.x = e.clientX;
+  mouse.y = e.clientY;
+});
+
+document.addEventListener("touchmove", (e) => {
+  mouse.x = e.touches[0].clientX;
+  mouse.y = e.touches[0].clientY;
+});
+
+function startGame() {
+  player.name = document.getElementById("name").value || "Player";
+  document.getElementById("menu").style.display = "none";
+  playing = true;
+  gameLoop();
+}
+
+function gameLoop() {
+  if (!playing) return;
+
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+  player.x += (mouse.x - player.x) * 0.05;
+  player.y += (mouse.y - player.y) * 0.05;
+
+  ctx.beginPath();
+  ctx.arc(player.x, player.y, player.size, 0, Math.PI * 2);
+  ctx.fillStyle = "blue";
+  ctx.fill();
+
+  ctx.fillStyle = "black";
+  ctx.fillText(player.name, player.x - 20, player.y - 25);
+
+  requestAnimationFrame(gameLoop);
+}
+</script>
+
 </body>
 </html>
